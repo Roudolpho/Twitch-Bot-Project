@@ -1,0 +1,115 @@
+<head>
+    <title>Twitch Tac Toe</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+ 
+	
+	
+	
+
+
+    </script>
+</head>
+<body>
+<p>
+
+</p>
+
+
+
+
+<canvas id="tictactoe" ></canvas>
+<script>
+ticboard = [];//allows for information from my fetchdata stuff to be global
+tictactoe = document.getElementById('tictactoe');
+var ctx = tictactoe.getContext("2d");
+resetDelay = true;
+dummyvar3 = setInterval(fetchData3,100);
+    function fetchData3() {// this function fetches data from my node.js server
+        $.get('/tictactoe',function (data) {
+            
+			//console.log(data[0]);
+			
+			ticboard = data[0];//keeps the gathered data global
+			
+			
+        });
+    }
+
+
+	
+function checkVictory(){
+	t = ticboard;
+	for(x=0;x<3;x++){
+	//console.log(t[0][x]+ " " +t[1][x]+ " " +t[2][x])
+		if((t[0][x]==t[1][x]&&t[2][x]==t[1][x])){
+			return t[0][x];
+		}
+		if((t[x][0]==t[x][1]&&t[x][2]==t[x][1])){
+			return t[x][0];
+		}
+	}
+	if((t[1][1]==t[2][2]&&t[1][1]==t[0][0])||(t[1][1]==t[2][0]&&t[0][2]==t[1][1])){
+		return t[1][1];
+	} else {
+		return 0;
+	}
+}
+	
+function drawBoard() { 
+    //console.log("draw");
+	xdim = 1000;
+	ydim = 1000;
+	tictactoe.height = ydim;
+	tictactoe.width = xdim;
+	
+    ctx.fillStyle = "#ffffff"//whites out the entire box with white
+    ctx.fillRect(0,0,ydim,ydim);
+    ctx.fillStyle = "#000000"
+    
+    for(y=1; y<3; y++) {//creates the two horizontal lines
+        ctx.fillRect(0,y*(ydim/3)-(ydim/60),ydim,ydim/30);
+    }
+    
+    for(x=1; x<3; x++) {//creates the two vertical lines
+        ctx.fillRect(x*(ydim/3)-(ydim/60),0,ydim/30,ydim);
+    }
+	ctx.fillStyle = "#00ff00";
+	ctx.font = "40px Arial";
+	ctx.fillText("A",10,150);
+	ctx.fillText("B",10,480);
+	ctx.fillText("C",10,850);
+	ctx.fillText("1",150,980);
+	ctx.fillText("2",480,980);
+	ctx.fillText("3",850,980);
+	for(y=0; y<3; y++){
+	for(x=0; x<3; x++){//draws the players' pieces on the board in their respective colors
+	ctx.fillStyle = "#ffffff";
+	//console.log(ticboard);
+	if(ticboard[y][x] == 1){
+	ctx.fillStyle = "#0000ff";
+	}
+	if(ticboard[y][x] == 2){
+	ctx.fillStyle = "#ff0000";
+	}
+	ctx.fillRect(x*(ydim/3)+(ydim/12),y*(ydim/3)+(ydim/12),ydim/6,ydim/6);
+	
+	}
+	}
+	if(checkVictory()==1){
+	ctx.fillStyle = "#0000ff";
+	ctx.font = "80px Arial";
+	ctx.fillText("Twitch Wins",10,50);
+	console.log("Twitch Wins");
+	} else if(checkVictory()==2){
+	ctx.fillStyle = "#ff0000";
+	ctx.font = "80px Arial";
+	ctx.fillText("Bot Wins",10,50);
+	console.log("Bot Wins");
+	}
+}
+
+setInterval(drawBoard, 500);//updates the board every half a second
+</script>
+
+</body>
