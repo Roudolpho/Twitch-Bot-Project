@@ -1,187 +1,32 @@
 <head>
-    <title>Community Canvas</title>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script>
- 
-	
-	
-	
-
-
-    </script>
-</head>
+	<title>Community Canvas</title>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head> 
 <body>
-<p>
-
-</p>
-
-
-
-
-<!--<canvas id="tictactoe" ></canvas>
-<script>
-ticboard = [];//allows for information from my fetchdata stuff to be global
-tictactoe = document.getElementById('tictactoe');
-var ctx = tictactoe.getContext("2d");
-
-dummyvar3 = setInterval(fetchData3,1000);
-    function fetchData3() {// this function fetches data from my node.js server
-        $.get('/tictactoe',function (data) {
-            ticboard = data;//keeps the gathered data global
-        });
-    }
- 
-function drawBoard() { 
-    //console.log("draw");
-	xdim = 1000;
-	ydim = 1000;
-	tictactoe.height = ydim;
-	tictactoe.width = xdim;
-	
-    ctx.fillStyle = "#ffffff"//whites out the entire box with white
-    ctx.fillRect(0,0,xdim,ydim);
-    ctx.fillStyle = "#000000"
-    
-    for(y=1; y<3; y++) {//creates the two horizontal lines
-        ctx.fillRect(0,y*(ydim/3)-(ydim/60),xdim,ydim/30);
-    }
-    
-    for(x=1; x<3; x++) {//creates the two vertical lines
-        ctx.fillRect(x*(xdim/3)-(xdim/60),0,xdim/30,ydim);
-    }
-	
-	for(y=1; y<3; y++){
-	for(x=1; x<3; x++){
-	if(tictactoe[y][x] = 1){
-	ctx.fillStyle = "#ff0000";
-	}
-	if(tictactoe[y][x] = 2){
-	ctx.fillStyle = "#00ff00";
-	}
-	ctx.fillRect(x*(xdim/3)-(xdim/12),y*(ydim/3)-(ydim/12),xdim/6,ydim/6);
-	
-	}
-	}
-}
-
-setInterval(drawBoard, 500);//updates the board every half a second
-</script>-->
-
-
-
-
-
-
-
-
-
+<!-- this is the canvas I use to draw my pixels-->
 <canvas id="draw">
 <script>
-
-	board = []; 
-	error = "";
-	dummyvar = setInterval(fetchData,100);
-	function fetchData() {
-        $.get('/board',function (data) {
-            //console.log(data);
-			//console.log(data[0]);
-			//console.log(data[0][0]);
-			board = data;
-        });
-    }
+board = [];//this initializes the array I retrieve from the node.js server later
+error = "";
+dummyvar = setInterval(fetchData,100);//this function simply refreshes the array depicting each pixel
+function fetchData() {
+	$.get('/board',function (data) {
+		board = data;
+	});
+}
 dummyvar2 = setInterval(drawBoard,100);	
-function drawBoard() {
-	console.log(board);
-
-	//console.log(board[0][0]);
-dimx = board[0].length*10;
-dimy = board.length*10;
-
-draw = document.getElementById('draw');
-draw.width = dimx; draw.height = dimy;
-var ctx=draw.getContext("2d");
-for (y=0;y<board.length;y++) for (x=0;x<board[0].length;x++) {
-
-	ctx.fillStyle= board[y][x];
-	ctx.fillRect(x * dimx / board[0].length, y * dimy / board.length, dimx / board[0].length, dimy / board.length);
+function drawBoard() {//this function draws the board
+	dimx = board[0].length*10;//decides the width of the canvas
+	dimy = board.length*10;//decides height of the canvas
+	draw = document.getElementById('draw');//creates a reference to the canvas
+	draw.width = dimx; draw.height = dimy;
+	var ctx=draw.getContext("2d");
+	for (y=0;y<board.length;y++) for (x=0;x<board[0].length;x++) {//draws each individual array value to the canvas
+		ctx.fillStyle= board[y][x];
+		ctx.fillRect(x * dimx / board[0].length, y * dimy / board.length, dimx / board[0].length, dimy / board.length);//this draws a given array value by using some math to find its position on the canvas
 	}
-	}
+}
 </script>
 </canvas>
-
-
-
-
-
-
-
-<!--<canvas id="myCanvas" width="1400" height="900" onclick="newFractal()">
-<script>
-var myCanvas= document.getElementById('myCanvas');
-
-ctx = myCanvas.getContext("2d");
-dumvar = setInterval(fetchData2, 500);
-C = [];
-function fetchData2() {
-
-        $.get('/C',function (data) {
-            //console.log(data);
-			//console.log(data[0]);
-			//console.log(data[0][0]);
-			C = data;
-			
-			
-        });
-		
-    }
-	
-	function fractalWorks(x, y){
-	maxIt = C[3];
-	//console.log('max iter ' + maxIt)
-	for(k=0;k<maxIt;k++){
-	n = x*x - y*y + x;
-	m = 2*x*y + y;
-	x = n;
-	y = m;
-	
-	//console.log(x + '     ' + y)
-	if(x*y > 5*maxIt**maxIt){
-	console.log(k/maxIt*100)
-	return (k/maxIt*100);
-	}
-	}
-	return 0;
-	}
-	
-	function newFractal(){
-	
-	console.log(C);
-	aColor = Math.floor(Math.random() * 100);
-	bColor = Math.floor(Math.random() * 100);
-	cColor = Math.floor(Math.random() * 100);
-	zoom = C[0];
-	posX = C[1];
-	posY = C[2];
-	for(i=0;i < myCanvas.width; i++){
-	for(j=0;j<myCanvas.height;j++){
-	//console.log(i + '     ' + j);
-	frac = fractalWorks(i/zoom - posX, j/zoom - posY);
-	if(frac == 0){
-	//console.log('blackfill');
-	ctx.fillStyle = '#000000';
-	ctx.fillRect(i,j,1,1);
-	} else {
-	//console.log('colorfill');
-	//ctx.fillStyle = '#00ff00';
-	ctx.fillStyle = 'hsl(0, 100%, ' + frac + '%)';
-	ctx.fillRect(i,j,1,1);
-	}
-	}
-	}
-	}
-
-</script>-->
-
-
 </body>
 
